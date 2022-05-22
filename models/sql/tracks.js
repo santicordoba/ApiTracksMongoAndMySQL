@@ -1,50 +1,77 @@
-const { Sequelize, sequelize } = require("../../config/mysql");
-const { DataTypes } = require('sequelize');
+const { sequelize } = require("../../config/mysql");
+const { DataTypes } = require("sequelize");
+const Storage = require("./storage");
 
 const Tracks = sequelize.define(
-    "tracks",
-    {
-        name:
-        { 
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        album:
-        {
-              type: DataTypes.NUMBER,
-        },
-        cover: 
-        {
-            type: DataTypes.STRING,
-        },
-        artist_name: 
-        {
-            type: DataTypes.STRING,
-        },
-        artis_nickname: 
-        {
-            type: DataTypes.STRING,
-        },
-        artis_nationality: 
-        {
-            type: DataTypes.STRING,
-        },
-        duration_start: 
-        {
-            type: DataTypes.NUMBER,
-        },
-        duration_end: 
-        {
-            type: DataTypes.NUMBER,
-        },
-        mediaId: 
-        {
-            type: DataTypes.STRING,
-        },
+  "tracks",
+  {
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    {
-        timestamps: true,
+    album: {
+      type: DataTypes.STRING,
     },
+    cover: {
+      type: DataTypes.STRING,
+    },
+    artist_name: {
+      type: DataTypes.STRING,
+    },
+    artist_nickname: {
+      type: DataTypes.STRING,
+    },
+    artist_nationality: {
+      type: DataTypes.STRING,
+    },
+    duration_start: {
+      type: DataTypes.INTEGER,
+    },
+    duration_end: {
+      type: DataTypes.INTEGER,
+    },
+    mediaId: {
+      type: DataTypes.STRING,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
 
+/**
+ * SAQUE AFUERA EL ALIAS PARA QUE SE CONFIGURE UNA UNICA VEZ
+ */
+
+ Tracks.belongsTo(Storage, {
+    foreignKey: "mediaId",
+    as: 'audio'
+  });
+  
+  Tracks.findAllData = function () {
+    Tracks.belongsTo(Storage, {
+      foreignKey: "mediaId",
+    });
+    return Tracks.findAll({ include:
+      [
+        {
+          model: Storage, as: "audio"
+        }
+      ]});
+  };
+  
+  Tracks.findOneData = function (id) {
+    Tracks.belongsTo(Storage, {
+      foreignKey: "mediaId",
+    });
+    return Tracks.findOne({ where: { id }, include:
+      [
+        {
+          model: Storage, as: "audio"
+        }
+      ]});
+  };
+
+// Tracks.find = Tracks.findAll;
+// Tracks.findById = Tracks.findByPk;
 module.exports = Tracks;

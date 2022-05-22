@@ -2,30 +2,33 @@ const { matchedData } = require("express-validator");
 const {tracksModel} = require("../models");
 const {handleHttpError} = require("../utils/handleError");
 
-//OBTENER LISTA DE ELEMENTOS
 const getItems = async (req, res) => {
-    // esto devuelve una promesa por eso con await 
-    //esperamos que se ejecuta el find y se debe agregar async a la funcion
-    try{
-        const user = req.user;
-        const data = await tracksModel.find({});
-        res.send({ data, user });
-    } catch(e){
-        handleHttpError(res, "ERROR_GET_ITEMS")
+    try {
+      const user = req.user;
+      const data = await tracksModel.findAllData({});
+      res.send({ data,  user });
+    } catch (e) {
+      console.log(e)
+      handleHttpError(res, "ERROR_GET_ITEMS");
     }
-};
-
-// //OBTENER UN ELEMENTO
-const getItem = async (req, res) => {
+  };
+  
+  /**
+   * Obtener un detalle
+   * @param {*} req
+   * @param {*} res
+   */
+  const getItem = async (req, res) => {
     try{
-        req = matchedData(req);
-        const {id} = req;
-        const data = await tracksModel.findById(id);
-        res.send({ data });
+      req = matchedData(req);
+      const {id} = req;
+      const data = await tracksModel.findOneData(id);
+      res.send({ data });
     }catch(e){
-        handleHttpError(res, "ERROR_GET_ITEM");
+      console.log(e);
+      handleHttpError(res,"ERROR_GET_ITEM")
     }
-};
+  };
 
 // //CREAR ELEMENTO
 const createItem = async (req, res) => {
