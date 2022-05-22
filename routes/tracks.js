@@ -11,7 +11,7 @@ const checkRole = require('../middleware/role');
 
 router.get("/", authMiddleware, getItems);
 router.get("/:id", authMiddleware, validatorGetItem, getItem);
-router.post("/", authMiddleware, checkRole(["admin"]), validatorCreateItem, createItem);
+router.post("/", authMiddleware, checkRole(["admin", "user"]), validatorCreateItem, createItem);
 router.put("/:id", authMiddleware, validatorGetItem, validatorCreateItem, updateItem);
 router.delete("/:id", authMiddleware, validatorGetItem, deleteItem);
 
